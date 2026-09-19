@@ -55,9 +55,11 @@
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/vehicle_rates_setpoint.h>
 #include <uORB/topics/vehicle_status.h>
+#include <uORB/topics/state_attack_att_status.h>
 #include <lib/mathlib/math/filter/AlphaFilter.hpp>
 #include <lib/slew_rate/SlewRate.hpp>
 #include <lib/stick_yaw/StickYaw.hpp>
+#include <lib/state_attack/StateAttackManager.hpp>
 
 #include <AttitudeControl.hpp>
 
@@ -98,6 +100,8 @@ private:
 
 	AttitudeControl _attitude_control; /**< class for attitude control calculations */
 	StickYaw _stick_yaw{this};
+
+	state_attack::StateAttackManager<state_attack_att_status_s> _state_attack{ORB_ID(state_attack_att_status), 7, 3};
 
 	uORB::SubscriptionInterval _parameter_update_sub{ORB_ID(parameter_update), 1_s};
 

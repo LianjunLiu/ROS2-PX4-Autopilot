@@ -67,6 +67,8 @@ bool MulticopterPositionControl::init()
 	_time_stamp_last_loop = hrt_absolute_time();
 	ScheduleNow();
 
+	_state_attack.init();
+
 	return true;
 }
 
@@ -389,6 +391,9 @@ void MulticopterPositionControl::Run()
 	parameters_update(false);
 
 	perf_begin(_cycle_perf);
+
+	_state_attack.update();
+
 	vehicle_local_position_s vehicle_local_position;
 
 	if (_local_pos_sub.update(&vehicle_local_position)) {
@@ -423,6 +428,8 @@ void MulticopterPositionControl::Run()
 				}
 			}
 		}
+
+		_state_attack.apply_position(vehicle_local_position);
 
 		PositionControlStates states{set_vehicle_states(vehicle_local_position, dt)};
 

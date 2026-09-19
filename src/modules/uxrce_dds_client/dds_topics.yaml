@@ -5,6 +5,18 @@
 #####
 publications:
 
+  - topic: /fmu/out/attack_status
+    type: px4_msgs::msg::AttackStatus
+    rate_limit: 10.
+
+  - topic: /fmu/out/state_attack_pos_status
+    type: px4_msgs::msg::StateAttackPosStatus
+    rate_limit: 100.
+
+  - topic: /fmu/out/state_attack_att_status
+    type: px4_msgs::msg::StateAttackAttStatus
+    rate_limit: 100.
+
   - topic: /fmu/out/register_ext_component_reply
     type: px4_msgs::msg::RegisterExtComponentReply
 
@@ -53,8 +65,9 @@ publications:
   - topic: /fmu/out/transponder_report
     type: px4_msgs::msg::TransponderReport
  
-  # - topic: /fmu/out/vehicle_angular_velocity
-  #   type: px4_msgs::msg::VehicleAngularVelocity
+  - topic: /fmu/out/vehicle_angular_velocity
+    type: px4_msgs::msg::VehicleAngularVelocity
+    rate_limit: 50.
 
   - topic: /fmu/out/vehicle_land_detected
     type: px4_msgs::msg::VehicleLandDetected
@@ -107,9 +120,21 @@ publications:
   - topic: /fmu/out/gimbal_device_attitude_status
     type: px4_msgs::msg::GimbalDeviceAttitudeStatus
     rate_limit: 20.
+  
+  - topic: /fmu/out/esc_status
+    type: px4_msgs::msg::EscStatus
 
 # Create uORB::Publication
 subscriptions:
+  - topic: /fmu/in/attack_command
+    type: px4_msgs::msg::AttackCommand
+
+  - topic: /fmu/in/state_attack_command
+    type: px4_msgs::msg::StateAttackCommand
+
+  - topic: /fmu/in/wind_command
+    type: px4_msgs::msg::WindCommand
+
   - topic: /fmu/in/register_ext_component_request
     type: px4_msgs::msg::RegisterExtComponentRequest
 

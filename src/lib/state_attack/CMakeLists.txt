@@ -1,6 +1,6 @@
 ############################################################################
 #
-#   Copyright (c) 2015-2020 PX4 Development Team. All rights reserved.
+#   Copyright (c) 2025 PX4 Development Team. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -31,23 +31,11 @@
 #
 ############################################################################
 
-add_subdirectory(GotoControl)
-add_subdirectory(PositionControl)
-add_subdirectory(Takeoff)
+px4_add_library(state_attack
+	StateAttackPrimitive.cpp
+	StateAttackPrimitive.hpp
+	StateAttackManager.cpp
+	StateAttackManager.hpp
+)
 
-px4_add_module(
-	MODULE modules__mc_pos_control
-	MAIN mc_pos_control
-	COMPILE_FLAGS
-	SRCS
-		MulticopterPositionControl.cpp
-		MulticopterPositionControl.hpp
-	DEPENDS
-		GotoControl
-		PositionControl
-		Takeoff
-		controllib
-		geo
-		SlewRate
-		state_attack
-	)
+target_include_directories(state_attack PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

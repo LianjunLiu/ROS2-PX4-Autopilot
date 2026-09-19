@@ -82,6 +82,8 @@ MulticopterAttitudeControl::init()
 		return false;
 	}
 
+	_state_attack.init();
+
 	return true;
 }
 
@@ -238,6 +240,8 @@ MulticopterAttitudeControl::Run()
 	}
 
 	// run controller on attitude updates
+	_state_attack.update();
+
 	vehicle_attitude_s v_att;
 
 	if (_vehicle_attitude_sub.update(&v_att)) {
@@ -245,6 +249,8 @@ MulticopterAttitudeControl::Run()
 		// Guard against too small (< 0.2ms) and too large (> 20ms) dt's.
 		const float dt = math::constrain(((v_att.timestamp_sample - _last_run) * 1e-6f), 0.0002f, 0.02f);
 		_last_run = v_att.timestamp_sample;
+
+		_state_attack.apply_attitude(v_att);
 
 		const Quatf q{v_att.q};
 

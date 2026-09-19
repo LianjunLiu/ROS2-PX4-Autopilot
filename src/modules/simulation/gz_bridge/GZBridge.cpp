@@ -132,6 +132,14 @@ int GZBridge::init()
 		}
 	}
 
+	// Attack injection manager: init first, then wire it into the ESC interface.
+	if (!_attack.init()) {
+		PX4_ERR("failed to init attack manager");
+		return PX4_ERROR;
+	}
+
+	_mixing_interface_esc.setAttack(&_attack);
+
 	// ESC mixing interface
 	if (!_mixing_interface_esc.init(_model_name)) {
 		PX4_ERR("failed to init ESC output");
@@ -185,6 +193,8 @@ void GZBridge::Run()
 		_mixing_interface_wheel.updateParams();
 		_gimbal.updateParams();
 	}
+
+	_attack.update();
 
 	ScheduleDelayed(10_ms);
 }
@@ -740,6 +750,34 @@ void GZBridge::navSatCallback(const gz::msgs::NavSat &msg)
 
 	// Apply noise model (based on ublox F9P)
 	addGpsNoise(latitude, longitude, altitude, vel_north, vel_east, vel_down);
+
+	// Attack injection: tamper the GPS measurement before the EKF consumes it.
+	// If any GPS channel requests a drop (DROP primitive), drop the whole message.
+	double lat_att = latitude;
+	double lon_att = longitude;
+	double alt_att = altitude;
+	double vn_att = static_cast<double>(vel_north);
+	double ve_att = static_cast<double>(vel_east);
+	double vd_att = static_cast<double>(vel_down);
+
+	bool gps_publish = true;
+	gps_publish &= _attack.apply(attack::Channel::GPS_LAT, lat_att, timestamp);
+	gps_publish &= _attack.apply(attack::Channel::GPS_LON, lon_att, timestamp);
+	gps_publish &= _attack.apply(attack::Channel::GPS_ALT, alt_att, timestamp);
+	gps_publish &= _attack.apply(attack::Channel::GPS_VEL_N, vn_att, timestamp);
+	gps_publish &= _attack.apply(attack::Channel::GPS_VEL_E, ve_att, timestamp);
+	gps_publish &= _attack.apply(attack::Channel::GPS_VEL_D, vd_att, timestamp);
+
+	if (!gps_publish) {
+		return;
+	}
+
+	latitude = lat_att;
+	longitude = lon_att;
+	altitude = alt_att;
+	vel_north = static_cast<float>(vn_att);
+	vel_east = static_cast<float>(ve_att);
+	vel_down = static_cast<float>(vd_att);
 
 	// Device ID
 	device::Device::DeviceId id{};

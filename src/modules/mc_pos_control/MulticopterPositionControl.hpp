@@ -48,6 +48,7 @@
 #include <lib/perf/perf_counter.h>
 #include <lib/slew_rate/SlewRateYaw.hpp>
 #include <lib/systemlib/mavlink_log.h>
+#include <lib/state_attack/StateAttackManager.hpp>
 #include <px4_platform_common/px4_config.h>
 #include <px4_platform_common/defines.h>
 #include <px4_platform_common/module.h>
@@ -60,6 +61,7 @@
 #include <uORB/SubscriptionCallback.hpp>
 #include <uORB/topics/hover_thrust_estimate.h>
 #include <uORB/topics/parameter_update.h>
+#include <uORB/topics/state_attack_pos_status.h>
 #include <uORB/topics/trajectory_setpoint.h>
 #include <uORB/topics/vehicle_attitude_setpoint.h>
 #include <uORB/topics/vehicle_constraints.h>
@@ -92,6 +94,8 @@ private:
 	void Run() override;
 
 	TakeoffHandling _takeoff; /**< state machine and ramp to bring the vehicle off the ground without jumps */
+
+	state_attack::StateAttackManager<state_attack_pos_status_s> _state_attack{ORB_ID(state_attack_pos_status), 0, 7};
 
 	orb_advert_t _mavlink_log_pub{nullptr};
 

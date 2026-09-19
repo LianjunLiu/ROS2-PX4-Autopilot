@@ -46,4 +46,5 @@ px4_add_module(
 		mathlib
 		px4_work_queue
 		StickYaw
+		state_attack
 	)

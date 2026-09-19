@@ -41,6 +41,10 @@
 #include <uORB/PublicationMulti.hpp>
 #include <uORB/topics/esc_status.h>
 
+namespace attack {
+class AttackManager;
+}
+
 
 // GZBridge mixing class for ESCs.
 // It is separate from GZBridge to have separate WorkItems and therefore allowing independent scheduling
@@ -62,6 +66,9 @@ public:
 
 	bool init(const std::string &model_name);
 
+	/** Wire in the attack manager (owned by GZBridge); may be null to disable attacks. */
+	void setAttack(attack::AttackManager *attack) { _attack = attack; }
+
 	void stop()
 	{
 		_mixing_output.unregister();
@@ -77,6 +84,9 @@ private:
 
 	gz::transport::Node &_node;
 	pthread_mutex_t _node_mutex;
+
+	attack::AttackManager *_attack{nullptr};
+	uint16_t _last_motor[MAX_ACTUATORS]{};  ///< last value sent per motor (DROP holds this)
 
 	MixingOutput _mixing_output{"SIM_GZ_EC", MAX_ACTUATORS, *this, MixingOutput::SchedulingPolicy::Auto, false, false};
 

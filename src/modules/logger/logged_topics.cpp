@@ -50,6 +50,8 @@ void LoggedTopics::add_default_topics()
 	add_optional_topic("actuator_controls_status_0", 300);
 	add_topic("airspeed", 1000);
 	add_optional_topic("airspeed_validated", 200);
+	add_topic("attack_command");
+	add_topic("attack_status", 100);
 	add_optional_topic("autotune_attitude_control_status", 100);
 	add_topic_multi("battery_info", 5000, 3);
 	add_optional_topic("camera_capture");
@@ -124,6 +126,9 @@ void LoggedTopics::add_default_topics()
 	add_topic("sensor_selection");
 	add_topic("sensors_status_imu", 200);
 	add_optional_topic("spoilers_setpoint", 1000);
+	add_topic("state_attack_command");
+	add_topic("state_attack_pos_status", 10);
+	add_topic("state_attack_att_status", 10);
 	add_topic("system_power", 500);
 	add_optional_topic("takeoff_status", 1000);
 	add_optional_topic("tecs_status", 200);
@@ -150,6 +155,7 @@ void LoggedTopics::add_default_topics()
 	add_topic("vehicle_status");
 	add_optional_topic("vtol_vehicle_status", 200);
 	add_topic("wind", 1000);
+	add_topic("wind_command");
 	add_topic("fixed_wing_lateral_setpoint");
 	add_topic("fixed_wing_longitudinal_setpoint");
 	add_topic("longitudinal_control_configuration");

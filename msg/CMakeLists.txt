@@ -46,6 +46,8 @@ set(msg_files
 	AdcReport.msg
 	Airspeed.msg
 	AirspeedWind.msg
+	AttackCommand.msg
+	AttackStatus.msg
 	AutotuneAttitudeControlStatus.msg
 	BatteryInfo.msg
 	ButtonEvent.msg
@@ -209,6 +211,9 @@ set(msg_files
 	SensorsStatusImu.msg
 	SensorUwb.msg
 	SensorAirflow.msg
+	StateAttackAttStatus.msg
+	StateAttackCommand.msg
+	StateAttackPosStatus.msg
 	SystemPower.msg
 	TakeoffStatus.msg
 	TaskStackInfo.msg
@@ -238,6 +243,7 @@ set(msg_files
 	VehicleTorqueSetpoint.msg
 	VelocityLimits.msg
 	WheelEncoders.msg
+	WindCommand.msg
 	YawEstimatorStatus.msg
 	versioned/ActuatorMotors.msg
 	versioned/ActuatorServos.msg

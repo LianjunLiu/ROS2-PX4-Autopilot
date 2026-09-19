@@ -52,6 +52,10 @@ if (gz-transport_FOUND)
 		COMPILE_FLAGS
 			${MAX_CUSTOM_OPT_LEVEL}
 		SRCS
+			attack/AttackManager.cpp
+			attack/AttackManager.hpp
+			attack/AttackPrimitive.cpp
+			attack/AttackPrimitive.hpp
 			GZBridge.cpp
 			GZBridge.hpp
 			GZMixingInterfaceESC.cpp

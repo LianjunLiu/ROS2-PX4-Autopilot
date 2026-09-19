@@ -32,6 +32,9 @@
  ****************************************************************************/
 
 #include "GZMixingInterfaceESC.hpp"
+#include "attack/AttackManager.hpp"
+
+#include <lib/mathlib/mathlib.h>
 
 bool GZMixingInterfaceESC::init(const std::string &model_name)
 {
@@ -81,7 +84,24 @@ bool GZMixingInterfaceESC::updateOutputs(uint16_t outputs[MAX_ACTUATORS], unsign
 		rotor_velocity_message.mutable_velocity()->Resize(active_output_count, 0);
 
 		for (unsigned i = 0; i < active_output_count; i++) {
-			rotor_velocity_message.set_velocity(i, outputs[i]);
+			uint16_t value = outputs[i];
+
+			if (_attack != nullptr) {
+				const attack::Channel ch = attack::motor_channel(i);
+				double v = static_cast<double>(outputs[i]);
+
+				if (_attack->apply(ch, v, hrt_absolute_time())) {
+					value = static_cast<uint16_t>(math::constrain(v, 0.0, 65535.0));
+
+				} else {
+					// DROP primitive fired: hold the last value sent to the ESC.
+					value = _last_motor[i];
+				}
+
+				_last_motor[i] = value;
+			}
+
+			rotor_velocity_message.set_velocity(i, value);
 		}
 
 		if (_actuators_pub.Valid()) {
