@@ -60,7 +60,8 @@ param set-default COM_ARM_WO_GPS 2
 
 # ---- LIVO 视觉里程计：关 GZ 真值、开 EV、关 GNSS，EV 作绝对位置源 ----
 param set-default SIM_GZ_EN_ODOM 0      # 关 GZ 真值 odom：防混流
-param set-default EKF2_EV_CTRL 3        # 开 EV：水平 + 垂直位置
+param set-default EKF2_EV_CTRL 11       # 开 EV：水平 + 垂直位置 + 航向（bit3；桥不提供速度，不开 bit2）
+param set-default EKF2_MAG_TYPE 5       # 关磁航向：yaw 只由 EV 提供（5=None；6=只用磁力计做初始航向）
 param set-default EKF2_EV_POS_X 0.0     # 传感器偏移 x：无
 param set-default EKF2_EV_POS_Y 0.0     # 传感器偏移 y：无
 param set-default EKF2_EV_POS_Z -0.11   # 传感器偏移 z：上方 0.11 m（z 向下为负）
