@@ -86,7 +86,11 @@ double transform(StatePrimitiveType type, double truth, const StateAttackSpec &s
 
 	case StatePrimitiveType::QUANTIZE:
 		// Step must have a non-negligible magnitude, otherwise pass through.
-		if (std::fabs(spec.a) > 1e-12) {return std::round(truth / spec.a) * spec.a;}
+		// PX4's minimal NuttX cmath has no std::round: round half away from zero via floor/ceil.
+		if (std::fabs(spec.a) > 1e-12) {
+			const double scaled = truth / spec.a;
+			return (scaled >= 0.0 ? std::floor(scaled + 0.5) : std::ceil(scaled - 0.5)) * spec.a;
+		}
 		return truth;
 
 	case StatePrimitiveType::CLAMP:
